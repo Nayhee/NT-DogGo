@@ -14,7 +14,6 @@ namespace DogGO.Controllers
             _walkerRepo = walkerRepository;
         }
 
-
         // GET: Walkers
         public ActionResult Index()
         {
