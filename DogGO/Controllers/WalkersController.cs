@@ -2,9 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using DogGO.Models;
+using DogGO.Controllers;
 using DogGO.Repositories;
 using DogGO.Models.ViewModels;
 using System;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DogGO.Controllers
 {
@@ -12,23 +15,39 @@ namespace DogGO.Controllers
     {
         private readonly IWalkerRepository _walkerRepo;
         private readonly IWalkRepository _walkRepo;
-        public WalkersController(IWalkerRepository walkerRepository, IWalkRepository walkRepo)
+        private readonly IOwnerRepository _ownerRepo;
+        private readonly IDogRepository _dogRepo;
+        public WalkersController(IWalkerRepository walkerRepository, IWalkRepository walkRepo, IOwnerRepository ownerRepo, IDogRepository dogRepo)
         {
             _walkerRepo = walkerRepository;
             _walkRepo = walkRepo;
+            _ownerRepo = ownerRepo;
+            _dogRepo = dogRepo;
         }
 
         // GET: Walkers
         public ActionResult Index()
         {
-            List<Walker> walkers = _walkerRepo.GetAllWalkers();
-            return View(walkers);
+            try
+            {
+                int currentUserId = GetCurrentUserId();
+
+                Owner owner = _ownerRepo.GetOwnerById(currentUserId);
+                List<Walker> walkersInOwnersNeighborhood = _walkerRepo.GetWalkersInNeighborhood(owner.NeighborhoodId);
+                return View(walkersInOwnersNeighborhood);
+            }
+            catch(Exception)
+            {
+                List<Walker> walkers = _walkerRepo.GetAllWalkers();
+                return View(walkers);
+            }
         }
 
         // GET: WalkersController/Details/5
         public ActionResult Details(int id)
         {
             Walker walker = _walkerRepo.GetWalkerById(id);
+
             List<Walk> walks = _walkRepo.GetWalksByWalkerId(walker.Id); 
 
             WalkerProfileViewModel vm = new WalkerProfileViewModel()
@@ -101,5 +120,12 @@ namespace DogGO.Controllers
                 return View();
             }
         }
+
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
+        }
+
     }
 }
