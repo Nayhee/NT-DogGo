@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using DogGO.Models;
 using DogGO.Repositories;
+using DogGO.Models.ViewModels;
 using System;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
@@ -12,9 +13,11 @@ namespace DogGO.Controllers
     public class DogController : Controller
     {
         private readonly IDogRepository _dogRepo;
-        public DogController(IDogRepository dogRepo)
+        private readonly IOwnerRepository _ownerRepo;
+        public DogController(IDogRepository dogRepo, IOwnerRepository ownerRepo)
         {
             _dogRepo = dogRepo;
+            _ownerRepo = ownerRepo;
         }
 
 
@@ -69,14 +72,11 @@ namespace DogGO.Controllers
             Dog dog = _dogRepo.GetDogById(id);
             int currentUserId = GetCurrentUserId();
 
-            if(currentUserId != dog.OwnerId || dog == null)
+            if (currentUserId != dog.OwnerId || dog == null)
             {
                 return NotFound();
             }
-            else
-            {
-                return View(dog);
-            }
+            return View(dog);
         }
 
         // POST: DogController/Edit/5
