@@ -435,3 +435,4 @@ C:\Users\natha\workspace\VS\DogGO\DogGO\obj\Debug\net5.0\Razor\Views\Dog\Details
 C:\Users\natha\workspace\VS\DogGO\DogGO\obj\Debug\net5.0\Razor\Views\Dog\Create.cshtml.g.cs
 C:\Users\natha\workspace\VS\DogGO\DogGO\obj\Debug\net5.0\Razor\Views\Dog\Edit.cshtml.g.cs
 C:\Users\natha\workspace\VS\DogGO\DogGO\obj\Debug\net5.0\Razor\Views\Dog\Delete.cshtml.g.cs
+C:\Users\natha\workspace\VS\DogGO\DogGO\obj\Debug\net5.0\Razor\Views\Owners\Login.cshtml.g.cs
